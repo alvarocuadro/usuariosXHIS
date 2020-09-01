@@ -107,19 +107,13 @@ public class GUI_Ldap {
 				dtm.addColumn("DNI");
 				dtm.addColumn("Email");
 				dtm.addColumn("Usuario");
-				dtm.addColumn("Cod. Categoría");
-				dtm.addColumn("Categoría");
+				dtm.addColumn("Cod. CategorÃ­a");
+				dtm.addColumn("CategorÃ­a");
 				dtm.addColumn("Cod. Perfiles");
 				dtm.addColumn("Perfiles");
 				dtm.addColumn("Cod. Servicio");
 				dtm.addColumn("Servicio");
-				String query = "select a.nombre_corto, a.cod_perso, a.email, b.syslogin,e.codigo_categoria, e.nom_categ, c.sys_perfil_pk, d.sys_perfil_desc, g.codigo_servicio, g.servicio  from fpersona \r\n" + 
-						"a inner join sys_usu b on a.codigo_personal = b.codigo_personal \r\n" + 
-						"inner join sys_perfil_usu c on c.SYSLOGIN = b.syslogin \r\n" + 
-						"inner join sys_perfil d on d.sys_perfil_pk = c.sys_perfil_pk \r\n" + 
-						"inner join tcategor e on e.codigo_categoria = a.codigo_categoria\r\n" + 
-						"inner join fpersona_servicio f on f.codigo_personal = a.codigo_personal \r\n" + 
-						"inner join servicios g on g.codigo_servicio = f.codigo_servicio" + " where cod_perso = '"+dni+"'";
+				String query = "SELECT campos From vista WHERE documento = '"+dni+"'";
 				try {
 					PreparedStatement pst=cn.prepareStatement(query);
 					ResultSet rs=pst.executeQuery();
