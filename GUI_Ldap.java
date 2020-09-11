@@ -1,22 +1,23 @@
 import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JTextField;
-import javax.swing.JTextPane;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.JButton;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.awt.event.ActionEvent;
-import javax.swing.JScrollPane;
+import java.sql.Statement;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
-import java.awt.Font;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.JTextPane;
+import javax.swing.table.DefaultTableModel;
 
-public class GUI_Ldap {
-
+public class GUI_LDAP {
+	
 	private JFrame frame;
 	private JTextField campoDNI;
 	private JScrollPane scrollPane;
@@ -29,11 +30,11 @@ public class GUI_Ldap {
 	/**
 	 * Launch the application.
 	 */
-	public void main(String[] args) {
+	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					GUI_Ldap window = new GUI_Ldap();
+					GUI_LDAP window = new GUI_LDAP();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -45,10 +46,10 @@ public class GUI_Ldap {
 	/**
 	 * Create the application.
 	 */
-	public GUI_Ldap() {
+	public GUI_LDAP() {
 		initialize();
+		
 	}
-	
 
 	/**
 	 * Initialize the contents of the frame.
@@ -76,10 +77,11 @@ public class GUI_Ldap {
 		JButton btnBuscarDNI = new JButton("Buscar");
 		btnBuscarDNI.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-	
+				
+			
 				Connection cn = null;
 				cn = SQL.getConnection();
-				
+
 				Buscar ldap = new Buscar();
 				String dni = campoDNI.getText();
 				Buscar resultado = new Buscar();
@@ -87,6 +89,7 @@ public class GUI_Ldap {
 				if( resultado.error == true) {
 					System.out.println("No existe el usuario en GUI_LDAP.jar");
 				textLDAP.setText("No existe el usuario en AD para ese DNI");
+				
 				}
 				else {
 				String[] listaResultado = new String[9];
@@ -100,9 +103,12 @@ public class GUI_Ldap {
 				listaResultado[6]= resultado.servicio.toString();
 				
 				textLDAP.setText(listaResultado[0]+"\n"+listaResultado[1]+"\n"+listaResultado[2]+"\n"+listaResultado[3]+"\n"+listaResultado[4]+"\n"+listaResultado[5]+"\n"+listaResultado[6]);
-				
+				}
 				
 				DefaultTableModel dtm = new DefaultTableModel();
+				
+				dtm.setRowCount(0);		
+				
 				dtm.addColumn("Nombre");
 				dtm.addColumn("DNI");
 				dtm.addColumn("Email");
@@ -113,10 +119,16 @@ public class GUI_Ldap {
 				dtm.addColumn("Perfiles");
 				dtm.addColumn("Cod. Servicio");
 				dtm.addColumn("Servicio");
-				String query = "SELECT campos From vista WHERE documento = '"+dni+"'";
-				try {
-					PreparedStatement pst=cn.prepareStatement(query);
-					ResultSet rs=pst.executeQuery();
+				String query = "select a.nombre_corto, a.cod_perso, a.email, b.syslogin,e.codigo_categoria, e.nom_categ, c.sys_perfil_pk, d.sys_perfil_desc, g.codigo_servicio, g.servicio  from fpersona \r\n" + 
+						"a inner join sys_usu b on a.codigo_personal = b.codigo_personal \r\n" + 
+						"inner join sys_perfil_usu c on c.SYSLOGIN = b.syslogin \r\n" + 
+						"inner join sys_perfil d on d.sys_perfil_pk = c.sys_perfil_pk \r\n" + 
+						"inner join tcategor e on e.codigo_categoria = a.codigo_categoria\r\n" + 
+						"inner join fpersona_servicio f on f.codigo_personal = a.codigo_personal \r\n" + 
+						"inner join servicios g on g.codigo_servicio = f.codigo_servicio" + " where cod_perso = '"+dni+"'";
+				
+				try (Statement st = cn.createStatement();ResultSet rs=st.executeQuery(query);) {
+										      
 					while (rs.next()) {
 						dtm.addRow(new Object[]{
 							rs.getString("nombre_corto"),
@@ -128,10 +140,12 @@ public class GUI_Ldap {
 							rs.getString("sys_perfil_pk"),
 							rs.getString("sys_perfil_desc"),
 							rs.getString("codigo_servicio"),
-							rs.getString("servicio")
-						});
+							rs.getString("servicio"),
+							
+						}); 
 					}
-										
+					
+					
 					tablaSql.setModel(dtm);
 					tablaSql.setAutoResizeMode(0);
 					tablaSql.getColumnModel().getColumn(0).setPreferredWidth(150);
@@ -147,12 +161,10 @@ public class GUI_Ldap {
 					
 					
 				} catch (Exception e) {
-					e.printStackTrace();
-				}
+					System.out.println(e+": no encuentra nada en el rs");
+				} 				
 				
-				
-				
-			}}
+			}
 		});
 		btnBuscarDNI.setBounds(192, 32, 89, 23);
 		frame.getContentPane().add(btnBuscarDNI);
@@ -178,5 +190,7 @@ public class GUI_Ldap {
 		lblNewLabel_2.setFont(new Font("Tahoma", Font.BOLD, 12));
 		lblNewLabel_2.setBounds(22, 264, 115, 20);
 		frame.getContentPane().add(lblNewLabel_2);
+	
 	}
+
 }
