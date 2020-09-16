@@ -10,7 +10,7 @@ public class SQL {
 	 
 			try {
 				Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-				cn=DriverManager.getConnection("jdbc:sqlserver://SQLPRODXHIS:1433;databaseName=xHis_Cap","sistemas_reader","r3ad3rs1spr0d");
+				cn=DriverManager.getConnection("jdbc:sqlserver://Server:Puerto;databaseName=DB","usuario","contraseña");
 				System.out.println("conectado");
 			} catch (Exception e) {
 				cn=null;
