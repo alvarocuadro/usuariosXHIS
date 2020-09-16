@@ -5,7 +5,7 @@ import javax.naming.Context;
 public class Ldap extends Logueo {	
 	
 	
-	Properties env = new Properties();//mantiene los par·metros de conexiÛn
+	Properties env = new Properties();//mantiene los par√°metros de conexi√≥n
 	
 	public void conectarLDAP() {	
 		
@@ -16,8 +16,8 @@ public class Ldap extends Logueo {
 		
 		
 	env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
-	env.put(Context.PROVIDER_URL, "ldap://DCSF001.finochietto.com:389");
-	env.put(Context.SECURITY_PRINCIPAL, usuario+"@finochietto.com");
+	env.put(Context.PROVIDER_URL, "ldap://Servidor:puerto");
+	env.put(Context.SECURITY_PRINCIPAL, usuario+"@dominio.com");
 	env.put(Context.SECURITY_CREDENTIALS, pw);
 	
 	}	
