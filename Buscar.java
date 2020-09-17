@@ -4,7 +4,7 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.InitialLdapContext;
 import javax.naming.ldap.LdapContext;
-import javax.swing.DefaultComboBoxModel;
+
 
 public class Buscar {
 
@@ -29,7 +29,7 @@ public class Buscar {
 	        LdapContext ctx = new InitialLdapContext(resultado.env, null);
 	        ctx.setRequestControls(null);
 	        String dni = args;
-	        String searchFilter = "(EmployeeID="+dni+")";//la búsqueda se realiza por el dni (EmployeeID de AD)
+	        String searchFilter = "(EmployeeID="+dni+")";//la bÃºsqueda se realiza por el dni (EmployeeID de AD)
 	        SearchControls constraints = new SearchControls();
 			constraints.setSearchScope(SearchControls.SUBTREE_SCOPE);
 	        NamingEnumeration<?> namingEnum = ctx.search("OU=Accounts, DC=finochietto,DC=com",searchFilter, constraints );
@@ -56,7 +56,7 @@ public class Buscar {
 	    	//System.out.println("error en el try de Buscar.java " + e);
 	       // e.printStackTrace();
 	    }
-	return busqueda;//retorna todos los parámetros
+	return busqueda;//retorna todos los parÃ¡metros
 		}
 	
 	public  Buscar buscarUsuario(String args) {
@@ -75,16 +75,11 @@ public class Buscar {
 			constraints.setSearchScope(SearchControls.SUBTREE_SCOPE);
 	        NamingEnumeration<?> namingEnum = ctx.search("OU=Accounts, DC=finochietto,DC=com",searchFilter, constraints );
 	        if(namingEnum.hasMore() == false) {
-	        	System.out.println("ese usuario no está en uso");
 	        busqueda.error=false;
 	      
 	        }
 	        else {
-	            System.out.println("el usuario ya existe");
-	            SearchResult result = (SearchResult) namingEnum.next (); 
-	            Attributes attrs = result.getAttributes ();
-	            System.out.println(attrs.get("cn").toString());
-	            busqueda.error=true;
+            busqueda.error=true;
 	        namingEnum.close();
 	 }} catch (Exception e) {
 	    	//System.out.println("error en el try de Buscar.java " + e);
