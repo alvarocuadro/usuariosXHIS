@@ -2,13 +2,17 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
+import javax.naming.ldap.InitialLdapContext;
+import javax.naming.ldap.LdapContext;
 import javax.swing.JButton;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
+@SuppressWarnings("serial")
 public class Logueo extends JFrame  {
 
 	private JFrame frmLogin;
@@ -45,6 +49,7 @@ public class Logueo extends JFrame  {
 	 */
 	private void initialize() {
 		frmLogin = new JFrame();
+		frmLogin.setResizable(false);
 		frmLogin.setTitle("Login");
 		frmLogin.setBounds(100, 100, 312, 188);
 		frmLogin.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -74,11 +79,35 @@ public class Logueo extends JFrame  {
 				
 				userName=textUser.getText();
 				contrasenia=passwordField.getText();
-				VentanaPrincipal ventana = new VentanaPrincipal();
-				ventana.setVisible(true);
-frmLogin.setVisible(false);
 				
-						
+				if(userName.equals("")||contrasenia.equals("")) {
+					JOptionPane.showMessageDialog(null,"Debe completar los campos Usuario y Contraseña");
+				}else {
+				
+				Ldap conexion= new Ldap();
+				conexion.conectarLDAP();
+					 try {
+					        LdapContext ctx = new InitialLdapContext(conexion.env, null);
+					        System.out.println("conectado a LDAP "+ctx);
+					        
+					        
+							VentanaPrincipal ventana = new VentanaPrincipal();
+							ventana.setVisible(true);
+							frmLogin.setVisible(false);
+				}
+				catch (Exception e) {
+
+				
+					
+					if(e.getMessage() != null )
+				 {
+						JOptionPane.showMessageDialog(null,"usuario y contraseña incorrectos");
+
+					}					
+					
+				}
+					
+			}		
 				
 			}
 		});
